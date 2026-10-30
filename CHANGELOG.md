@@ -14,6 +14,9 @@ schemaVersion 0.5.0.
 - `pbbg-content install-skill [DIR]` copies the skill into a project, defaulting
   to .claude/skills.
 - A repository .mcp.json for agents working on the package itself.
+- MCP Registry listing as io.github.quarterback/pbbg-content-schema: server.json,
+  mcpName and repository metadata in package.json, and a publish workflow for npm
+  and the registry that runs on version tags or by hand.
 
 ## 0.5.0
 

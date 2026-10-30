@@ -259,6 +259,10 @@ args = ["-y", "github:quarterback/pbbg-content-schema", "mcp"]
 
 If the package is already a project dependency, use `"command": "npx", "args": ["pbbg-content", "mcp"]` so the server version matches the installed package. This repository's own `.mcp.json` runs the server from source for agents working on the package.
 
+Once the package is on npm, `pbbg-content-schema` can replace `github:quarterback/pbbg-content-schema` in any of these commands.
+
+**MCP Registry.** The server's name in the official MCP Registry is `io.github.quarterback/pbbg-content-schema`. `server.json` holds the listing, and `mcpName` in `package.json` lets the registry confirm the npm package belongs to it. The **Publish to npm and the MCP Registry** workflow publishes both. It runs when a `v*` tag is pushed or when it is started by hand from the Actions tab. It needs an `NPM_TOKEN` repository secret; the registry step signs in with GitHub OIDC and needs no secret. To release a new version, change the version in `package.json` and in both places in `server.json`, then run the workflow. A test fails if the three disagree.
+
 ---
 
 ## License & Attribution

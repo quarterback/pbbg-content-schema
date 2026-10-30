@@ -103,3 +103,12 @@ test('CLI installs the skill into a chosen directory', () => {
   assert.ok(fs.existsSync(path.join(dir, 'pbbg-content-schema', 'SKILL.md')));
   fs.rmSync(dir, { recursive: true, force: true });
 });
+test('registry metadata matches the package', () => {
+  const pkg = JSON.parse(fs.readFileSync(new URL('../package.json', import.meta.url)));
+  const server = JSON.parse(fs.readFileSync(new URL('../server.json', import.meta.url)));
+  assert.equal(server.name, pkg.mcpName);
+  assert.equal(server.version, pkg.version);
+  assert.equal(server.packages[0].identifier, pkg.name);
+  assert.equal(server.packages[0].version, pkg.version);
+  assert.ok(server.description.length <= 100);
+});

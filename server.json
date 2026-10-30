@@ -1,0 +1,28 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.quarterback/pbbg-content-schema",
+  "title": "PBBG Content Schema",
+  "description": "Check and write browser game content bundles: interface copy, narrative and game definitions.",
+  "repository": {
+    "url": "https://github.com/quarterback/pbbg-content-schema",
+    "source": "github"
+  },
+  "version": "0.6.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "pbbg-content-schema",
+      "version": "0.6.0",
+      "runtimeHint": "npx",
+      "transport": {
+        "type": "stdio"
+      },
+      "packageArguments": [
+        {
+          "type": "positional",
+          "value": "mcp"
+        }
+      ]
+    }
+  ]
+}
