@@ -1,0 +1,131 @@
+{
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": "0.5.0"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-zA-Z][a-zA-Z0-9_.-]*$"
+    },
+    "principles": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "domainGuidance": {
+      "type": "object",
+      "properties": {
+        "interface": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "narrative": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "required": [
+        "interface",
+        "narrative"
+      ],
+      "additionalProperties": false
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-zA-Z][a-zA-Z0-9_.-]*$"
+          },
+          "domains": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "interface",
+                "narrative"
+              ]
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "patterns": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "action-label",
+                "navigation-heading",
+                "action-preview",
+                "blocked-action",
+                "arrangement-status",
+                "report",
+                "dialogue",
+                "scene",
+                "card",
+                "action-result",
+                "technical-error",
+                "empty-state",
+                "tutorial",
+                "ending"
+              ]
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "check": {
+            "enum": [
+              "terminal-punctuation",
+              "max-words",
+              "forbidden-phrase",
+              "markup"
+            ]
+          },
+          "severity": {
+            "enum": [
+              "error",
+              "warning"
+            ]
+          },
+          "value": {
+            "type": [
+              "string",
+              "integer"
+            ]
+          },
+          "guidance": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "id",
+          "domains",
+          "check",
+          "severity",
+          "guidance"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "id",
+    "principles",
+    "domainGuidance",
+    "rules"
+  ],
+  "additionalProperties": false,
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:pbbg-content-schema:policy:0.5.0"
+}

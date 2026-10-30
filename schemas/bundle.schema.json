@@ -1,0 +1,523 @@
+{
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": "0.5.0"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-zA-Z][a-zA-Z0-9_.-]*$"
+    },
+    "roles": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-zA-Z][a-zA-Z0-9_.-]*$"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "phases": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-zA-Z][a-zA-Z0-9_.-]*$"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "entities": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/entity"
+      }
+    },
+    "facts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/fact"
+      }
+    },
+    "effectTypes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/effectType"
+      }
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/action"
+      }
+    },
+    "content": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/content"
+      }
+    },
+    "scenes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/scene"
+      }
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/event"
+      }
+    },
+    "outcomes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/outcome"
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "id",
+    "roles",
+    "phases",
+    "entities",
+    "facts",
+    "effectTypes",
+    "actions",
+    "content",
+    "scenes",
+    "events",
+    "outcomes"
+  ],
+  "additionalProperties": false,
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:pbbg-content-schema:bundle:0.5.0",
+  "title": "Browser game content architecture",
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-zA-Z][a-zA-Z0-9_.-]*$"
+    },
+    "condition": {
+      "type": "object",
+      "properties": {
+        "ref": {
+          "type": "string",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9_.-]*$"
+        },
+        "op": {
+          "enum": [
+            "eq",
+            "gte",
+            "contains"
+          ]
+        },
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "ref",
+        "op",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "entity": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9_.-]*$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ],
+      "additionalProperties": false
+    },
+    "fact": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9_.-]*$"
+        },
+        "type": {
+          "enum": [
+            "string",
+            "number",
+            "boolean"
+          ]
+        },
+        "audience": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z][a-zA-Z0-9_.-]*$"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "phases": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z][a-zA-Z0-9_.-]*$"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "audience",
+        "phases"
+      ],
+      "additionalProperties": false
+    },
+    "effectType": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9_.-]*$"
+        },
+        "targetKind": {
+          "enum": [
+            "fact",
+            "entity",
+            "none"
+          ]
+        },
+        "valueType": {
+          "enum": [
+            "string",
+            "number",
+            "boolean",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "targetKind",
+        "valueType"
+      ],
+      "additionalProperties": false
+    },
+    "effect": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9_.-]*$"
+        },
+        "target": {
+          "type": "string",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9_.-]*$"
+        },
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "type",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "action": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9_.-]*$"
+        },
+        "cost": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        "requires": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/condition"
+          }
+        },
+        "effects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/effect"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "cost",
+        "effects"
+      ],
+      "additionalProperties": false
+    },
+    "binding": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "enum": [
+            "fact",
+            "entity",
+            "action-cost"
+          ]
+        },
+        "ref": {
+          "type": "string",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9_.-]*$"
+        },
+        "key": {
+          "type": "string",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9_.-]*$"
+        }
+      },
+      "required": [
+        "source",
+        "ref"
+      ],
+      "additionalProperties": false
+    },
+    "content": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9_.-]*$"
+        },
+        "domain": {
+          "enum": [
+            "interface",
+            "narrative"
+          ]
+        },
+        "pattern": {
+          "enum": [
+            "action-label",
+            "navigation-heading",
+            "action-preview",
+            "blocked-action",
+            "arrangement-status",
+            "report",
+            "dialogue",
+            "scene",
+            "card",
+            "action-result",
+            "technical-error",
+            "empty-state",
+            "tutorial",
+            "ending"
+          ]
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1
+        },
+        "audience": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z][a-zA-Z0-9_.-]*$"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "phases": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z][a-zA-Z0-9_.-]*$"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "speakerRef": {
+          "type": "string",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9_.-]*$"
+        },
+        "bindings": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[a-zA-Z][a-zA-Z0-9_]*$"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/binding"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "domain",
+        "pattern",
+        "text",
+        "audience",
+        "phases"
+      ],
+      "additionalProperties": false
+    },
+    "scene": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9_.-]*$"
+        },
+        "entry": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/condition"
+          }
+        },
+        "next": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z][a-zA-Z0-9_.-]*$"
+          },
+          "uniqueItems": true
+        },
+        "contentRefs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z][a-zA-Z0-9_.-]*$"
+          }
+        },
+        "actionRefs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z][a-zA-Z0-9_.-]*$"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "next",
+        "contentRefs",
+        "actionRefs"
+      ],
+      "additionalProperties": false
+    },
+    "choice": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9_.-]*$"
+        },
+        "labelRef": {
+          "type": "string",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9_.-]*$"
+        },
+        "actionRef": {
+          "type": "string",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9_.-]*$"
+        }
+      },
+      "required": [
+        "id",
+        "labelRef",
+        "actionRef"
+      ],
+      "additionalProperties": false
+    },
+    "event": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9_.-]*$"
+        },
+        "sceneRefs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z][a-zA-Z0-9_.-]*$"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "after": {
+          "type": "number",
+          "minimum": 0
+        },
+        "when": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/condition"
+          }
+        },
+        "titleRef": {
+          "type": "string",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9_.-]*$"
+        },
+        "bodyRef": {
+          "type": "string",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9_.-]*$"
+        },
+        "choices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/choice"
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "id",
+        "sceneRefs",
+        "titleRef",
+        "bodyRef",
+        "choices"
+      ],
+      "additionalProperties": false
+    },
+    "outcome": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9_.-]*$"
+        },
+        "textRef": {
+          "type": "string",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9_.-]*$"
+        }
+      },
+      "required": [
+        "id",
+        "textRef"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

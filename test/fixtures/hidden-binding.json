@@ -1,0 +1,203 @@
+{
+  "schemaVersion": "0.5.0",
+  "id": "station-demo",
+  "roles": [
+    "traveler",
+    "dispatcher"
+  ],
+  "phases": [
+    "planning",
+    "result",
+    "debrief"
+  ],
+  "entities": [
+    {
+      "id": "conductor",
+      "name": "The conductor",
+      "kind": "person"
+    }
+  ],
+  "facts": [
+    {
+      "id": "service.status",
+      "type": "string",
+      "audience": [
+        "traveler",
+        "dispatcher"
+      ],
+      "phases": [
+        "planning",
+        "result",
+        "debrief"
+      ]
+    },
+    {
+      "id": "parcel.location",
+      "type": "string",
+      "audience": [
+        "traveler"
+      ],
+      "phases": [
+        "planning",
+        "result",
+        "debrief"
+      ]
+    }
+  ],
+  "effectTypes": [
+    {
+      "id": "service.request",
+      "targetKind": "fact",
+      "valueType": "string"
+    }
+  ],
+  "actions": [
+    {
+      "id": "request.service",
+      "cost": {
+        "turns": 1
+      },
+      "requires": [
+        {
+          "ref": "service.status",
+          "op": "eq",
+          "value": "available"
+        }
+      ],
+      "effects": [
+        {
+          "type": "service.request",
+          "target": "service.status",
+          "value": "requested"
+        }
+      ]
+    }
+  ],
+  "content": [
+    {
+      "id": "service.label",
+      "domain": "interface",
+      "pattern": "action-label",
+      "text": "Request service",
+      "audience": [
+        "traveler"
+      ],
+      "phases": [
+        "planning"
+      ]
+    },
+    {
+      "id": "service.preview",
+      "domain": "interface",
+      "pattern": "action-preview",
+      "text": "Turns required: {turns}. A request does not confirm a departure.",
+      "audience": [
+        "traveler"
+      ],
+      "phases": [
+        "planning"
+      ],
+      "bindings": {
+        "turns": {
+          "source": "action-cost",
+          "ref": "request.service",
+          "key": "turns"
+        }
+      }
+    },
+    {
+      "id": "station.title",
+      "domain": "interface",
+      "pattern": "navigation-heading",
+      "text": "The station",
+      "audience": [
+        "traveler"
+      ],
+      "phases": [
+        "planning"
+      ]
+    },
+    {
+      "id": "station.arrival",
+      "domain": "narrative",
+      "pattern": "scene",
+      "text": "The conductor checks the timetable. No departure is confirmed.",
+      "audience": [
+        "traveler"
+      ],
+      "phases": [
+        "planning"
+      ],
+      "speakerRef": "conductor"
+    },
+    {
+      "id": "service.report",
+      "domain": "interface",
+      "pattern": "report",
+      "text": "Service status: {status}",
+      "audience": [
+        "dispatcher"
+      ],
+      "phases": [
+        "planning",
+        "result"
+      ],
+      "bindings": {
+        "status": {
+          "source": "fact",
+          "ref": "parcel.location"
+        }
+      }
+    },
+    {
+      "id": "service.ending",
+      "domain": "narrative",
+      "pattern": "ending",
+      "text": "The service departs.",
+      "audience": [
+        "traveler",
+        "dispatcher"
+      ],
+      "phases": [
+        "debrief"
+      ]
+    }
+  ],
+  "scenes": [
+    {
+      "id": "station",
+      "next": [],
+      "contentRefs": [
+        "station.title",
+        "station.arrival",
+        "service.preview"
+      ],
+      "actionRefs": [
+        "request.service"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "service.offer",
+      "sceneRefs": [
+        "station"
+      ],
+      "titleRef": "station.title",
+      "bodyRef": "station.arrival",
+      "choices": [
+        {
+          "id": "request",
+          "labelRef": "service.label",
+          "actionRef": "request.service"
+        }
+      ]
+    }
+  ],
+  "outcomes": [
+    {
+      "id": "departed",
+      "textRef": "service.ending"
+    }
+  ]
+}
