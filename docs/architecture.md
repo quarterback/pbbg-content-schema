@@ -46,7 +46,9 @@ inheritance are not implemented. Keep policy changes reviewable separately from
 content changes.
 
 `guidance` exposes the same rules used by the checker, plus qualitative guidance
-for the agent. It works without a model, MCP server or prompt framework.
+for the agent. It works without a model, MCP server or prompt framework. The
+optional MCP server in `src/mcp.js` exposes the same checks, guidance and
+rendering as read-only tools; it adds no rules of its own.
 
 ## Checks and diagnostics
 

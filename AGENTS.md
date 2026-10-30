@@ -10,6 +10,14 @@ own licenses. Earlier records of an MIT default do not override this choice.
 
 Keep the core independent of game fiction, particular mechanics and external
 editorial systems. Do not add cross-product integrations without owner direction.
+The owner directed the agent skill and MCP server added in 0.6.0. Keep the server
+read only, dependency free and a thin layer over src/index.js; new checks belong
+in src/index.js first.
+
+Agents editing a content bundle follow skills/pbbg-content-schema/SKILL.md. Agents
+working in this repository can use the server defined in .mcp.json. When tools,
+rules or patterns change, update the skill, README tool table and tests together.
+
 The owner chose to publish this architecture now. Do not impose a second-game
 requirement or rewrite the release as a product announcement.
 

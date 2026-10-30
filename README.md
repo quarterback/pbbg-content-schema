@@ -1,8 +1,8 @@
 # PBBG Content Schema
 
-Version 0.5.0 • Experimental Architecture Release
+Version 0.6.0 • Experimental Architecture Release • Content format 0.5.0
 
-A standalone content architecture package for separating interface language, narrative structure, and game definitions in browser games developed with agents. It provides JSON Schemas, scoped writing policies, a neutral fictional example, reference projection tooling, and a local linter CLI.
+A standalone content architecture package for separating interface language, narrative structure, and game definitions in browser games developed with agents. It provides JSON Schemas, scoped writing policies, a neutral fictional example, reference projection tooling, a local linter CLI, an agent skill, and a local MCP server.
 
 ---
 
@@ -29,12 +29,14 @@ Rather than waiting for a second playable game, the architecture was sanitized a
 | `policies/base.json` | Editable base policy with separate interface and narrative guidance |
 | `examples/station.json` | Original fictional example with no dependency on the source game's setting |
 | `src/index.js` | Reference validation, role/phase projection, text rendering, and task guidance |
-| `bin/pbbg-content.js` | Local CLI for validation and machine-readable agent guidance |
+| `bin/pbbg-content.js` | Local CLI for validation, machine-readable agent guidance, skill installation, and the MCP server |
+| `src/mcp.js` | Local MCP server over stdio that exposes the checks as agent tools |
+| `skills/pbbg-content-schema/SKILL.md` | Agent skill with the editing workflow, tool map, and boundaries |
 | `docs/architecture.md` | Data responsibilities, data flow, and architectural limits |
 | `docs/adoption.md` | Incremental integration guide for existing game engines |
 | `docs/sources.md` | Attributions for design and plain-language guidance sources |
 
-The package uses Ajv for JSON Schema validation. It has zero external editorial-tool integrations, model API calls, telemetry, or runtime network calls.
+The package uses Ajv for JSON Schema validation. The MCP server is written against the protocol directly and adds no dependencies. There are no external editorial-tool integrations, model API calls, telemetry, or runtime network calls.
 
 ---
 
@@ -96,7 +98,7 @@ Scenes declare entry conditions, possible successors, and references to content 
 
 Schema validation is independent of prose policy. Policy selection uses shared principles, domain guidance, and pattern-scoped checks. A project replaces the base policy as a whole with `--policy`; implicit file merging and policy inheritance are not implemented. Keep policy changes reviewable separately from content changes.
 
-`guidance` exposes the same rules used by the checker, plus qualitative guidance for the agent. It works without a model, MCP server, or prompt framework.
+`guidance` exposes the same rules used by the checker, plus qualitative guidance for the agent. It works without a model, MCP server, or prompt framework. The optional MCP server exposes the same function as a tool.
 
 ---
 
@@ -150,7 +152,7 @@ A project can add literal forbidden-phrase rules through policy. Matches are cas
 * **Limits of v0.5:** There is no general simulation, arbitrary expression language, package override loader, automatic string extraction, save migration, or browser integration.
 * **No semantic guarantee:** There is no semantic check for spoilers manually written into text, contradictory story claims, unreachable scenes, or falsely declared public information.
 
-Use the package's stable structures while reviewing these limits as the format changes. Content and package versions currently match at 0.5.0. A later format change must include a migration note instead of silently reinterpreting data.
+Use the package's stable structures while reviewing these limits as the format changes. The content format is 0.5.0 and bundles keep declaring `"schemaVersion": "0.5.0"`. Package 0.6.0 adds agent access without changing the format. A later format change must include a migration note instead of silently reinterpreting data.
 
 ---
 
@@ -201,6 +203,61 @@ const text = renderText(bundle, 'service.preview', {
 });
 console.log(text);
 ```
+
+### 4. Agent skill and MCP server
+
+The package ships an agent skill and a local MCP server so coding agents can check and write content through tools instead of shell output.
+
+**Skill.** `skills/pbbg-content-schema/SKILL.md` tells an agent how to classify text by domain and pattern, pull guidance before drafting, bind values instead of typing them, and fix diagnostics by rule ID. Install it into a project's Claude Code skills folder:
+
+```sh
+npx -y github:quarterback/pbbg-content-schema install-skill
+# or choose a folder, such as a user-level skills directory
+npx -y github:quarterback/pbbg-content-schema install-skill ~/.claude/skills
+```
+
+Codex and other agents that read `AGENTS.md` can point to the same file. The MCP server also serves it as the `pbbg://skill` resource.
+
+**MCP server.** `pbbg-content mcp` starts a stdio server. Relative paths in tool calls resolve from the directory the agent host starts it in, which is usually the project root.
+
+| Tool | Purpose |
+| --- | --- |
+| `check_bundle` | Validate a bundle object or file with the base or a project policy; returns `valid` and diagnostics |
+| `get_guidance` | Principles, guidance, rules, and the content entry schema for a domain and pattern |
+| `render_text` | Render one entry for a role, phase, and state to confirm bindings |
+| `project_facts` | List the fact values a role may see in a phase |
+| `get_schema` | Bundle schema, policy schema, base policy, or the list of domains and patterns |
+
+Resources: `pbbg://skill`, `pbbg://schemas/bundle`, `pbbg://schemas/policy`, `pbbg://policies/base`, `pbbg://examples/station`, `pbbg://docs/architecture`, and `pbbg://docs/adoption`. All tools are read only. Nothing in the server writes files.
+
+Claude Code, from the project root:
+
+```sh
+claude mcp add pbbg-content -- npx -y github:quarterback/pbbg-content-schema mcp
+```
+
+Or commit a `.mcp.json` to the game repository:
+
+```json
+{
+  "mcpServers": {
+    "pbbg-content": {
+      "command": "npx",
+      "args": ["-y", "github:quarterback/pbbg-content-schema", "mcp"]
+    }
+  }
+}
+```
+
+Claude Desktop and Cursor take the same `mcpServers` block in their own config files. Codex uses `~/.codex/config.toml`:
+
+```toml
+[mcp_servers.pbbg-content]
+command = "npx"
+args = ["-y", "github:quarterback/pbbg-content-schema", "mcp"]
+```
+
+If the package is already a project dependency, use `"command": "npx", "args": ["pbbg-content", "mcp"]` so the server version matches the installed package. This repository's own `.mcp.json` runs the server from source for agents working on the package.
 
 ---
 

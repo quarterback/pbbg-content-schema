@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.6.0
+
+Adds agent access. The content format is unchanged and bundles still declare
+schemaVersion 0.5.0.
+
+- Agent skill at skills/pbbg-content-schema/SKILL.md with the editing workflow,
+  tool map, common diagnostics and boundaries.
+- Local MCP server over stdio (`pbbg-content mcp`, `src/mcp.js`) with read-only
+  tools check_bundle, get_guidance, render_text, project_facts and get_schema,
+  plus resources for the skill, schemas, base policy, example and docs. It is
+  written against the protocol directly and adds no dependencies.
+- `pbbg-content install-skill [DIR]` copies the skill into a project, defaulting
+  to .claude/skills.
+- A repository .mcp.json for agents working on the package itself.
+
 ## 0.5.0
 
 Initial experimental architecture release. Includes bundle and policy JSON

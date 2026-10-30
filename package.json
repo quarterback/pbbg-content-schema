@@ -1,7 +1,7 @@
 {
   "name": "pbbg-content-schema",
-  "version": "0.5.0",
-  "description": "Schemas and content policies for interface and narrative architecture in browser games",
+  "version": "0.6.0",
+  "description": "Schemas, content policies, an agent skill and a local MCP server for interface and narrative architecture in browser games",
   "type": "module",
   "license": "EPL-2.0",
   "engines": {
@@ -10,7 +10,8 @@
   "exports": {
     ".": "./src/index.js",
     "./schemas/*": "./schemas/*",
-    "./policies/*": "./policies/*"
+    "./policies/*": "./policies/*",
+    "./mcp": "./src/mcp.js"
   },
   "bin": {
     "pbbg-content": "./bin/pbbg-content.js"
@@ -26,6 +27,7 @@
     "src/",
     "bin/",
     "examples/",
+    "skills/",
     "docs/",
     "README.md",
     "LICENSE",
