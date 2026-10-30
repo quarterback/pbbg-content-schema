@@ -4,6 +4,10 @@ This is a standalone content architecture package for browser games. Preserve th
 separation between interface text, narrative, game definitions and presentation.
 Read README.md and docs/architecture.md before changing schemas or tooling.
 
+The owner selected Eclipse Public License 2.0 (EPL-2.0). Keep LICENSE and package
+metadata consistent with that decision. Third-party dependencies retain their
+own licenses. Earlier records of an MIT default do not override this choice.
+
 Keep the core independent of game fiction, particular mechanics and external
 editorial systems. Do not add cross-product integrations without owner direction.
 The owner chose to publish this architecture now. Do not impose a second-game

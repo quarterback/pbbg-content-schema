@@ -5,6 +5,11 @@ Agent: Codex
 Accountable human: Ron Bronson  
 Status: Package prepared and tested; publication status is tracked separately
 
+Owner license decision, October 30, 2026: use Eclipse Public License 2.0
+(EPL-2.0). This supersedes the initial MIT selection recorded below. The license
+file, package metadata and lockfile root were updated to match. Dependency
+licenses remain their own. The source is now published in this repository.
+
 ## 1. Intent
 
 The owner chose to publish the architecture without waiting for a second game.
