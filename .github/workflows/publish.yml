@@ -26,19 +26,45 @@ jobs:
           if (p.mcpName !== s.name) throw new Error('mcpName and server.json name differ');
           if (p.version !== s.version || p.version !== k.version) throw new Error('versions differ');
           if (p.name !== k.identifier) throw new Error('package name and identifier differ');"
+      - name: Check the npm token
+        run: |
+          if [ -z "$NODE_AUTH_TOKEN" ]; then
+            echo "::error title=NPM_TOKEN missing::The NPM_TOKEN repository secret is empty or not visible to this workflow. Add it under Settings, Secrets and variables, Actions, Repository secrets."
+            exit 1
+          fi
+          if ! user=$(npm whoami 2>whoami.log); then
+            echo "::error title=npm rejected the token::$(tr '\n' ' ' < whoami.log)"
+            exit 1
+          fi
+          echo "::notice title=npm token works::Signed in to npm as $user"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Publish package to npm
         run: |
-          if npm view "$(node -p "require('./package.json').name")@$(node -p "require('./package.json').version")" version >/dev/null 2>&1; then
-            echo "This version is already on npm. Skipping npm publish."
-          else
-            npm publish --provenance --access public
+          name=$(node -p "require('./package.json').name"); version=$(node -p "require('./package.json').version")
+          if npm view "$name@$version" version >/dev/null 2>&1; then
+            echo "::notice::$name@$version is already on npm. Skipping npm publish."
+            exit 0
           fi
+          if ! npm publish --provenance --access public 2>&1 | tee publish.log; then
+            echo "::error title=npm publish failed::$(grep -i 'npm error' publish.log | head -8 | tr '\n' ' ')"
+            exit 1
+          fi
+        shell: bash -o pipefail {0}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Install mcp-publisher
         run: |
           curl -L "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').tar.gz" | tar xz mcp-publisher
       - name: Sign in to the MCP Registry
-        run: ./mcp-publisher login github-oidc
+        run: |
+          if ! ./mcp-publisher login github-oidc 2>&1 | tee login.log; then
+            echo "::error title=MCP Registry sign in failed::$(tail -5 login.log | tr '\n' ' ')"; exit 1
+          fi
+        shell: bash -o pipefail {0}
       - name: Publish server to the MCP Registry
-        run: ./mcp-publisher publish
+        run: |
+          if ! ./mcp-publisher publish 2>&1 | tee registry.log; then
+            echo "::error title=MCP Registry publish failed::$(tail -8 registry.log | tr '\n' ' ')"; exit 1
+          fi
+        shell: bash -o pipefail {0}
