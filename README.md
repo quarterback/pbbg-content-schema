@@ -145,7 +145,7 @@ A project can add literal forbidden-phrase rules through policy. Matches are cas
 
 ## Validation Boundaries & Adoption Limits
 
-* **Source game status:** *Coalition* served as the extraction source, but the game itself has not yet migrated its inline content to this CLI.
+* **In use:** Every build of *Coalition* checks the game's copy with this CLI. The game's text in this format is in [`content/pbbg/coalition.bundle.json`](https://github.com/quarterback/escape-game/blob/main/content/pbbg/coalition.bundle.json).
 * **Host engine responsibilities:** The host engine retains actual simulation state, clock scheduling, and disclosure controls. Fact bindings passed to `renderText` must be pre-evaluated values.
 * **Exclusions:** The package does not include a browser loader, save state migrator, general simulation engine, or automatic string extraction tool.
 * **Security note:** Audience declarations in JSON bundles are not server security. Secret game state should be managed by a trusted server.
